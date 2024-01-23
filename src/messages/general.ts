@@ -16,4 +16,16 @@ export const generalMessages = defineMessages({
     id: "global.general.noDataTable",
     defaultMessage: "No hay datos para mostrar",
   },
+  name: {
+    id: "global.general.name",
+    defaultMessage: "Nombre",
+  },
+  records: {
+    id: "global.general.records",
+    defaultMessage: "Expedientes",
+  },
+  record: {
+    id: "global.general.record",
+    defaultMessage: "Expediente",
+  },
 });

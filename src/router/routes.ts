@@ -1,8 +1,10 @@
 import { ReactElement } from "react";
-import { sidebarMessages } from "../messages/sidebar";
-import SignIn from "../views/SignIn";
-import AuthLayout from "../layout/AuthLayout";
-import BaseLayout from "../layout/BaseLayout";
+import { sidebarMessages } from "@/messages/sidebar";
+import AuthLayout from "@/layout/AuthLayout";
+import BaseLayout from "@/layout/BaseLayout";
+
+import SignIn from "@/views/SignIn";
+import Records from "@/views/Records";
 
 interface Layout {
   children: ReactElement;
@@ -22,8 +24,7 @@ export interface Route {
 
 export const paths = {
   auth: "/inicio-de-sesion",
-  events: "/eventos",
-  cameras: "/camaras",
+  records: "/expedientes",
 };
 export const routes: Route[] = [
   {
@@ -31,5 +32,11 @@ export const routes: Route[] = [
     path: paths.auth,
     component: SignIn,
     layout: AuthLayout,
+  },
+  {
+    id: "records",
+    path: paths.records,
+    component: Records,
+    layout: BaseLayout,
   },
 ];

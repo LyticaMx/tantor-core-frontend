@@ -10,7 +10,7 @@ const SignIn = (): ReactElement => {
     <div className="p-4 rounded-lg w-96 flex flex-col items-center justify-center">
       <h2 className="text-2xl">{getMessage("welcome")}</h2>
       <img src={reactLogo} className="my-4 h-12 w-12" />
-      <h1 className="mb-4 text-xl font-bold">VIAR</h1>
+      <h1 className="mb-4 text-xl font-bold">Tantor Core</h1>
       <AuthForm />
     </div>
   );

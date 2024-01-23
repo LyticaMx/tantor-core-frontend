@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start": "yarn dev",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "extract-intl": "formatjs extract src/**/*.{js,jsx,ts,tsx} --ignore **/*.d.ts --out-file src/translations/es-mx.json --id-interpolation-pattern [sha512:contenthash:base64:6] --format simple",

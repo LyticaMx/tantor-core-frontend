@@ -35,7 +35,7 @@ const AuthProvider = (props: Props): ReactElement => {
           name: "Admin",
         },
       });
-      history.push(paths.events);
+      history.push(paths.records);
     } catch (e) {
       console.error(e);
     } finally {

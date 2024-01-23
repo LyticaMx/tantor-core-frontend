@@ -6,11 +6,15 @@ export const actionsMessages = defineMessages({
     defaultMessage: "Iniciar sesión",
   },
   watch: {
-    id: "globa.actions.watch",
+    id: "global.actions.watch",
     defaultMessage: "Ver",
   },
+  create: {
+    id: "global.actions.create",
+    defaultMessage: "Crear",
+  },
   saveChanges: {
-    id: "globa.actions.saveChanges",
+    id: "global.actions.saveChanges",
     defaultMessage: "Guardar cambios",
   },
 });
