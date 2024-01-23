@@ -36,7 +36,7 @@ const FileTree = () => {
           <FolderPlusIcon className="w-5 h-5" />
         </button>
       </div>
-      <div className="mt-2">
+      <div className="mt-2 flex flex-col gap-1">
         <File name="Fotografía-1023-12345-1" type={FileType.IMAGE} />
         <File name="Fotografía-1023-12345-2" type={FileType.IMAGE} />
         <Folder name="Videos por la mañana">
