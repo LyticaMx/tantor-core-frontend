@@ -1,26 +1,25 @@
-import { RecordStatus } from "@/types/RecordStatus";
+import { useEffect } from "react";
 import Record from "./Record";
+import { useRecords } from "@/context/Records";
 
 const RecordsList = () => {
+  const { records, activeRecord, actions } = useRecords();
+
+  useEffect(() => {
+    actions?.getRecords();
+  }, []);
+
   return (
     <div className="flex flex-col gap-1">
-      <Record id="1" name="Caso NL 001-2012-12-23" status={RecordStatus.OPEN} />
-      <Record
-        id="2"
-        name="Caso SN 002-2012-12-23"
-        status={RecordStatus.OPEN}
-        selected
-      />
-      <Record
-        id="3"
-        name="Caso YC 001-2018-12-23"
-        status={RecordStatus.PAUSED}
-      />
-      <Record
-        id="4"
-        name="Caso ZC 001-2020-12-23"
-        status={RecordStatus.CLOSED}
-      />
+      {records.map((record) => (
+        <Record
+          id={record.id}
+          name={record.name}
+          status={record.status}
+          selected={record.id === activeRecord?.id}
+          onClick={actions?.setActiveRecord ?? (() => {})}
+        />
+      ))}
     </div>
   );
 };

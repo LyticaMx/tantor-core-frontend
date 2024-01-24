@@ -1,3 +1,4 @@
+import { Record as RecordType } from "@/context/Records/types";
 import { RecordStatus } from "@/types/RecordStatus";
 import clsx from "clsx";
 
@@ -6,6 +7,7 @@ interface Props {
   name: string;
   status: RecordStatus;
   selected?: boolean;
+  onClick: (record: RecordType) => void;
 }
 
 const Record = (props: Props) => (
@@ -15,6 +17,9 @@ const Record = (props: Props) => (
       props.selected && "bg-purple-600 bg-opacity-15"
     )}
     role="button"
+    onClick={() =>
+      props.onClick({ id: props.id, name: props.name, status: props.status })
+    }
   >
     <span
       className={clsx("inline-block w-3 h-3 bg-green-400 rounded-full", {

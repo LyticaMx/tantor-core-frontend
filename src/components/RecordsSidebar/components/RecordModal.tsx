@@ -12,6 +12,7 @@ import { useFormik } from "formik";
 import { object, string } from "yup";
 import { modalMessages } from "../messages";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { useRecords } from "@/context/Records";
 
 interface FormValues {
   name: string;
@@ -24,13 +25,14 @@ interface Props {
 }
 
 const RecordModal = (props: Props) => {
+  const { actions } = useRecords();
   const getMessage = useFormatMessage(modalMessages);
   const formik = useFormik<FormValues>({
     initialValues: {
       name: props.initialState?.name ?? "",
     },
-    onSubmit: (values: FormValues) => {
-      console.log(values);
+    onSubmit: async (values: FormValues) => {
+      await actions?.createRecord(values);
       props.onOpenChange(false);
     },
     validationSchema: object({

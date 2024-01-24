@@ -6,6 +6,7 @@ import { AuthProvider } from "@/context/Auth";
 import Navigator from "@/router/Navigator";
 import Loader from "@/components/Loader";
 import { ToastContainer } from "react-toastify";
+import { RecordsProvider } from "@/context/Records";
 
 function App() {
   return (
@@ -13,8 +14,10 @@ function App() {
       <LanguageProvider>
         <LoaderProvider>
           <AuthProvider>
-            <Navigator />
-            <Loader />
+            <RecordsProvider>
+              <Navigator />
+              <Loader />
+            </RecordsProvider>
           </AuthProvider>
         </LoaderProvider>
       </LanguageProvider>
