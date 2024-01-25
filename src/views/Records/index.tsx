@@ -8,13 +8,15 @@ import {
   SpeakerWaveIcon,
   VideoCameraIcon,
 } from "@heroicons/react/24/outline";
-import { useMemo } from "react";
 import demoPDF from "@/demo/transcription.pdf";
+import { useFileTree } from "@/context/FileTree/useFileTree";
 
 const Records = () => {
-  let type: FileType = FileType.PDF;
+  const { activeNode } = useFileTree();
 
-  const Image = useMemo(() => {
+  if (!activeNode || activeNode.isDirectory) return null;
+
+  const getImage = (type?: FileType) => {
     switch (type) {
       case FileType.AUDIO:
         return SpeakerWaveIcon;
@@ -28,14 +30,16 @@ const Records = () => {
       default:
         return DocumentIcon;
     }
-  }, [type]);
+  };
+
+  const Image = getImage(activeNode?.type);
 
   return (
     <main className="max-h-full">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Image className="w-5 h-5" />
-          <h3>Documento importante</h3>
+          <h3>{activeNode?.name ?? ""}</h3>
         </div>
         <div className="flex items-center gap-2">
           <button className="transition-[color] hover:text-primary">

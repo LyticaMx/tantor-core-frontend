@@ -7,6 +7,7 @@ import Navigator from "@/router/Navigator";
 import Loader from "@/components/Loader";
 import { ToastContainer } from "react-toastify";
 import { RecordsProvider } from "@/context/Records";
+import { FileTreeProvider } from "./context/FileTree/Provider";
 
 function App() {
   return (
@@ -15,8 +16,10 @@ function App() {
         <LoaderProvider>
           <AuthProvider>
             <RecordsProvider>
-              <Navigator />
-              <Loader />
+              <FileTreeProvider>
+                <Navigator />
+                <Loader />
+              </FileTreeProvider>
             </RecordsProvider>
           </AuthProvider>
         </LoaderProvider>

@@ -5,18 +5,27 @@ import {
 } from "@heroicons/react/24/outline";
 import { Divider, useDisclosure } from "@nextui-org/react";
 import File from "./components/File";
-import { FileType } from "@/types/FileType";
 import Folder from "./components/Folder";
 import FolderModal from "./components/FolderModal";
+import { useRecords } from "@/context/Records";
+import { useFileTree } from "@/context/FileTree/useFileTree";
+import { useEffect } from "react";
 
 const FileTree = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { activeRecord } = useRecords();
+  const { files, activeNode, actions } = useFileTree();
+
+  useEffect(() => {
+    if (!activeRecord?.id) return;
+    actions?.getFiles(activeRecord.id);
+  }, [activeRecord]);
 
   return (
     <div>
       <h3 className="flex gap-2 items-center py-2">
         <InformationCircleIcon className="w-5 h-5" />
-        <span className="font-medium">Caso SN 002-2012-12-23</span>
+        <span className="font-medium">{activeRecord?.name ?? ""}</span>
       </h3>
       <Divider className="my-4" />
       <form className="hidden">
@@ -37,16 +46,27 @@ const FileTree = () => {
         </button>
       </div>
       <div className="mt-2 flex flex-col gap-1">
-        <File name="Fotografía-1023-12345-1" type={FileType.IMAGE} />
-        <File name="Fotografía-1023-12345-2" type={FileType.IMAGE} />
-        <Folder name="Videos por la mañana">
-          <File name="Video-sin-etiquetar-2" type={FileType.VIDEO} />
-          <File name="Video-sin-etiquetar-3" type={FileType.VIDEO} />
-        </Folder>
-        <Folder name="Videos por la tarde" />
-        <File name="Documento importante" type={FileType.TEXT} selected />
-        <File name="Video-sin-etiquetar" type={FileType.VIDEO} />
-        <File name="Notas sobre el caso" type={FileType.TEXT} />
+        {files.map((node) =>
+          node.isDirectory ? (
+            <Folder
+              key={node.id}
+              id={node.id}
+              name={node.name}
+              onClick={actions?.setActiveNode ?? (() => {})}
+              nodes={node.content}
+              activeNode={activeNode}
+            />
+          ) : (
+            <File
+              key={node.id}
+              id={node.id}
+              name={node.name}
+              onClick={actions?.setActiveNode ?? (() => {})}
+              activeNode={activeNode}
+              type={node.type}
+            />
+          )
+        )}
       </div>
       <FolderModal isOpen={isOpen} onOpenChange={onOpenChange} />
     </div>

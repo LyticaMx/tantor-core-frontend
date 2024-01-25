@@ -1,3 +1,4 @@
+import { TreeNode } from "@/context/FileTree/types";
 import { FileType } from "@/types/FileType";
 import {
   DocumentIcon,
@@ -10,9 +11,11 @@ import clsx from "clsx";
 import { useMemo } from "react";
 
 interface Props {
+  id: string;
   name: string;
   type: FileType;
-  selected?: boolean;
+  onClick: (node: TreeNode) => void;
+  activeNode: TreeNode | null;
 }
 
 const File = (props: Props) => {
@@ -37,8 +40,17 @@ const File = (props: Props) => {
       role="button"
       className={clsx(
         "py-1 px-2 rounded-lg hover:bg-purple-100 transition-background",
-        props.selected && "bg-purple-600 bg-opacity-15"
+        props.id === props.activeNode?.id && "bg-purple-600 bg-opacity-15"
       )}
+      onClick={() =>
+        props.onClick({
+          id: props.id,
+          content: "",
+          isDirectory: false,
+          name: props.name,
+          type: props.type,
+        })
+      }
     >
       <p className="flex items-center gap-2">
         <span className="block">
