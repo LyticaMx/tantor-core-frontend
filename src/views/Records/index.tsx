@@ -50,7 +50,7 @@ const Records = () => {
           </button>
         </div>
       </header>
-      <section className="mt-4 h-[96%]">
+      <section className="mt-4">
         <embed
           src={demoPDF}
           type="application/pdf"
