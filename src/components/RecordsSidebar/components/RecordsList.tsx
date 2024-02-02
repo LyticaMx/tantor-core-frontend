@@ -13,6 +13,7 @@ const RecordsList = () => {
     <div className="flex flex-col gap-1">
       {records.map((record) => (
         <Record
+          key={record.id}
           id={record.id}
           name={record.name}
           status={record.status}

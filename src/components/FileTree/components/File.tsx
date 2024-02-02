@@ -14,6 +14,7 @@ interface Props {
   id: string;
   name: string;
   type: FileType;
+  level: number;
   onClick: (node: TreeNode) => void;
   activeNode: TreeNode | null;
 }
@@ -49,14 +50,15 @@ const File = (props: Props) => {
           isDirectory: false,
           name: props.name,
           type: props.type,
+          level: props.level,
         })
       }
     >
-      <p className="flex items-center gap-2">
+      <p className="flex items-center gap-2 break-keep">
         <span className="block">
           <Image className="w-4 h-4" />
         </span>
-        {props.name}
+        <span className="flex-shrink-0">{props.name}</span>
       </p>
     </div>
   );

@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
 import { sidebarMessages } from "@/messages/sidebar";
 import AuthLayout from "@/layout/AuthLayout";
 import BaseLayout from "@/layout/BaseLayout";
@@ -16,7 +16,7 @@ export interface Route {
   i18ModuleKey?: keyof typeof sidebarMessages;
   path: string;
   icon?: any;
-  component: () => ReactElement;
+  component: () => ReactNode;
   layout: ({ children }: Layout) => ReactElement;
   private?: boolean;
   sidebar?: boolean;
@@ -38,5 +38,6 @@ export const routes: Route[] = [
     path: paths.records,
     component: Records,
     layout: BaseLayout,
+    private: true,
   },
 ];

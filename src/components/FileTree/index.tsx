@@ -9,15 +9,17 @@ import Folder from "./components/Folder";
 import FolderModal from "./components/FolderModal";
 import { useRecords } from "@/context/Records";
 import { useFileTree } from "@/context/FileTree/useFileTree";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 const FileTree = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { activeRecord } = useRecords();
   const { files, activeNode, actions } = useFileTree();
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (!activeRecord?.id) return;
+    actions?.setActiveNode();
     actions?.getFiles(activeRecord.id);
   }, [activeRecord]);
 
@@ -28,8 +30,24 @@ const FileTree = () => {
         <span className="font-medium">{activeRecord?.name ?? ""}</span>
       </h3>
       <Divider className="my-4" />
-      <form className="hidden">
-        <input id="loadFile" type="file" accept="application/pdf" />
+      <form className="hidden" ref={formRef}>
+        <input
+          id="loadFile"
+          type="file"
+          accept="application/pdf"
+          onChange={async ({ target: { validity, files } }) => {
+            if (validity.valid && files && files.length > 0) {
+              const isRootChild =
+                !Boolean(activeNode) || !activeNode?.isDirectory;
+              await actions?.uploadFile(
+                files[0],
+                isRootChild,
+                isRootChild ? activeRecord?.id : activeNode?.id
+              );
+              formRef.current?.reset();
+            }
+          }}
+        />
       </form>
       <div className="flex items-center">
         <label
@@ -55,6 +73,7 @@ const FileTree = () => {
               onClick={actions?.setActiveNode ?? (() => {})}
               nodes={node.content}
               activeNode={activeNode}
+              level={node.level}
             />
           ) : (
             <File
@@ -64,6 +83,7 @@ const FileTree = () => {
               onClick={actions?.setActiveNode ?? (() => {})}
               activeNode={activeNode}
               type={node.type}
+              level={node.level}
             />
           )
         )}

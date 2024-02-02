@@ -3,7 +3,7 @@ import { Auth, ContextType } from "./types";
 import { Context, createContext } from "react";
 
 export const initialState: Auth = {
-  isLoggedIn: false,
+  isLoggedIn: Boolean(getItem("token")),
   token: getItem("token"),
   rToken: getItem("rToken"),
   profile: {

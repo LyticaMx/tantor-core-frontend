@@ -12,6 +12,8 @@ import {
 import { useFormik } from "formik";
 import { object, string } from "yup";
 import { modalMessages } from "../messages";
+import { useFileTree } from "@/context/FileTree/useFileTree";
+import { useRecords } from "@/context/Records";
 
 interface FormValues {
   name: string;
@@ -25,12 +27,20 @@ interface Props {
 
 const FolderModal = (props: Props) => {
   const getMessage = useFormatMessage(modalMessages);
+  const { activeNode, actions } = useFileTree();
+  const { activeRecord } = useRecords();
   const formik = useFormik<FormValues>({
     initialValues: {
       name: props.initialState?.name ?? "",
     },
-    onSubmit: (values: FormValues) => {
-      console.log(values);
+    onSubmit: async (values: FormValues, helpers) => {
+      const isRootChild = !Boolean(activeNode) || !activeNode?.isDirectory;
+      await actions?.createDirectory(
+        values.name,
+        isRootChild,
+        isRootChild ? activeRecord?.id : activeNode?.id
+      );
+      helpers.resetForm();
       props.onOpenChange(false);
     },
     validationSchema: object({

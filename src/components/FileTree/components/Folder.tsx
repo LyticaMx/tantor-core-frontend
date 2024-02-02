@@ -8,6 +8,7 @@ interface Props {
   id: string;
   name: string;
   nodes?: TreeNode[];
+  level: number;
   onClick: (node: TreeNode) => void;
   activeNode: TreeNode | null;
 }
@@ -16,20 +17,23 @@ const Folder = (props: Props) => {
   const [expand, setExpand] = useState<boolean>(false);
 
   return (
-    <div>
+    <div className="flex-0">
       <button
         className={clsx(
           "w-full py-1 px-2 rounded-lg flex gap-2 items-center hover:bg-purple-100 transition-background",
           props.id === props.activeNode?.id && "bg-purple-600 bg-opacity-15"
         )}
         onClick={() => {
+          if (!expand) {
+            props.onClick({
+              id: props.id,
+              content: [],
+              isDirectory: true,
+              name: props.name,
+              level: props.level,
+            });
+          }
           setExpand((val) => !val);
-          props.onClick({
-            id: props.id,
-            content: [],
-            isDirectory: true,
-            name: props.name,
-          });
         }}
       >
         <span>
@@ -38,7 +42,12 @@ const Folder = (props: Props) => {
         {props.name}
       </button>
       {expand && props.nodes && (
-        <section className="pl-2 flex flex-col gap-1">
+        <section
+          className={clsx(
+            "pl-2 flex flex-col gap-1",
+            props.nodes.length > 0 && " pt-1"
+          )}
+        >
           {props.nodes.map((node) =>
             node.isDirectory ? (
               <Folder
@@ -48,6 +57,7 @@ const Folder = (props: Props) => {
                 onClick={props.onClick}
                 nodes={node.content}
                 activeNode={props.activeNode}
+                level={node.level}
               />
             ) : (
               <File
@@ -57,6 +67,7 @@ const Folder = (props: Props) => {
                 onClick={props.onClick}
                 activeNode={props.activeNode}
                 type={node.type}
+                level={node.level}
               />
             )
           )}

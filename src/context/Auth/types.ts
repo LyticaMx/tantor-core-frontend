@@ -19,5 +19,6 @@ export interface ContextType {
   actions?: {
     signIn: (values: SignIn) => Promise<void>;
     signOut: () => Promise<void>;
+    killSession: (hideNotification?: boolean) => void;
   };
 }

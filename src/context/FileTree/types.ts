@@ -6,6 +6,7 @@ export interface FileNode {
   content: string;
   type: FileType;
   isDirectory: false;
+  level: number;
 }
 
 export interface DirectoryNode {
@@ -13,6 +14,7 @@ export interface DirectoryNode {
   name: string;
   content: TreeNode[];
   isDirectory: true;
+  level: number;
 }
 
 export type TreeNode = FileNode | DirectoryNode;
@@ -22,8 +24,16 @@ export interface TreeContextType {
   files: TreeNode[];
   actions?: {
     getFiles: (record: string) => Promise<void>;
-    uploadFile: (file: File, parent?: string) => Promise<boolean>;
-    createDirectory: (name: string, parent?: string) => Promise<boolean>;
+    uploadFile: (
+      file: File,
+      isRootChild: boolean,
+      parent?: string
+    ) => Promise<boolean>;
+    createDirectory: (
+      name: string,
+      isRootChild: boolean,
+      parent?: string
+    ) => Promise<boolean>;
     setActiveNode: (node?: TreeNode) => void;
   };
 }

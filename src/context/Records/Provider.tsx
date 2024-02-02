@@ -1,7 +1,8 @@
 import { ReactElement, ReactNode, useMemo, useState } from "react";
 import { Record, RecordPayload, RecordsContextType } from "./types";
-import { useLoader } from "../Loader";
 import { RecordsContext } from "./context";
+import { useApolloClient } from "@apollo/client";
+import { ADD_CASE, GET_CASES } from "./queries/cases.graphql";
 import { RecordStatus } from "@/types/RecordStatus";
 
 interface Props {
@@ -11,25 +12,28 @@ interface Props {
 const RecordsProvider = ({ children }: Props): ReactElement => {
   const [records, setRecords] = useState<Record[]>([]);
   const [activeRecord, setActiveRecord] = useState<Record | null>(null);
-  const { actions } = useLoader();
+  const client = useApolloClient();
 
   const createRecord = async (record: RecordPayload): Promise<boolean> => {
     try {
-      actions?.addPendingActions();
-      await new Promise<void>((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 3000);
-      });
-      setRecords((records) => [
-        ...records,
-        {
-          id: new Date().toISOString(),
+      const response = await client.mutate({
+        mutation: ADD_CASE,
+        variables: {
           name: record.name,
-          status: RecordStatus.OPEN,
         },
-      ]);
-      actions?.removePendingActions();
+      });
+
+      if (response.data) {
+        setRecords((records) => [
+          ...records,
+          {
+            id: response.data.createCase.mongoId,
+            name: response.data.createCase.name,
+            status: RecordStatus.OPEN,
+          },
+        ]);
+      }
+
       return true;
     } catch {
       return false;
@@ -38,15 +42,18 @@ const RecordsProvider = ({ children }: Props): ReactElement => {
 
   const getRecords = async (): Promise<void> => {
     try {
-      actions?.addPendingActions();
-      await new Promise<void>((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 3000);
-      });
-      setRecords([]);
-      actions?.removePendingActions();
-    } catch {}
+      const response = await client.query({ query: GET_CASES });
+
+      setRecords(
+        (response.data?.getCases?.edges as any[])?.map((edge) => ({
+          id: edge?.node?.mongoId,
+          name: edge?.node?.name,
+          status: RecordStatus.OPEN,
+        })) ?? []
+      );
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const setActive = (record?: Record): void => {
