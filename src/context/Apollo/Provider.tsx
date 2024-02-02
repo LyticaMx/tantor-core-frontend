@@ -9,6 +9,7 @@ import { ReactNode } from "react";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import { getItem } from "@/utils/persistentStorage";
 import { useLoader } from "../Loader";
+import { useAuth } from "../Auth";
 
 interface Props {
   children: ReactNode;
@@ -17,13 +18,14 @@ interface Props {
 const ApolloProvider = (props: Props) => {
   const { children } = props;
   const { actions } = useLoader();
+  const { actions: authActions } = useAuth();
 
   const loaderLink = new ApolloLink((operation, forward) => {
     actions?.addPendingActions();
 
-    return forward(operation).map((data) => {
+    return forward(operation).map((response) => {
       actions?.removePendingActions();
-      return data;
+      return response;
     });
   });
 
@@ -34,7 +36,16 @@ const ApolloProvider = (props: Props) => {
         Authorization: token ? `Bearer ${token}` : "",
       },
     });
-    return forward(operation);
+    return forward(operation).map((response) => {
+      if (response.errors) {
+        response.errors.forEach((error) => {
+          if (error.message === "Credenciales inválidas.") {
+            authActions?.killSession();
+          }
+        });
+      }
+      return response;
+    });
   });
 
   const httpLink = createUploadLink({
