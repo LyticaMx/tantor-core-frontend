@@ -4,6 +4,7 @@ export interface Record {
   id: string;
   name: string;
   status: RecordStatus;
+  root: string;
 }
 
 export type RecordPayload = Omit<Record, "id" | "status">;

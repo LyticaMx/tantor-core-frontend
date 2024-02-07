@@ -1,10 +1,10 @@
 import { gql } from "@apollo/client";
 
 export const GET_FOLDER = gql`
-  query GetFolders($caseId: String, $id: String) {
+  query GetFolders($id: String) {
     getFolders(
       includes: { subfolders: true, files: true }
-      filters: { caseId: $caseId, id: $id }
+      filters: { id: $id }
     ) {
       edges {
         node {
@@ -27,12 +27,7 @@ export const GET_FOLDER = gql`
 export const UPLOAD_FILE = gql`
   mutation UploadFile($file: Upload!, $folderId: String, $caseId: String) {
     uploadFile(
-      newFile: {
-        file: $file
-        folderId: $folderId
-        caseId: $caseId
-        fileType: "DOCUMENT"
-      }
+      newFiles: [{ file: $file, folderId: $folderId, caseId: $caseId }]
     ) {
       mongoId
       name
@@ -42,10 +37,8 @@ export const UPLOAD_FILE = gql`
 `;
 
 export const CREATE_FOLDER = gql`
-  mutation CreateFolder($name: String!, $folderId: String, $caseId: String) {
-    createFolder(
-      newFolder: { name: $name, folderId: $folderId, caseId: $caseId }
-    ) {
+  mutation CreateFolder($name: String!, $folderId: String) {
+    createFolder(newFolder: { name: $name, folderId: $folderId }) {
       mongoId
       name
     }

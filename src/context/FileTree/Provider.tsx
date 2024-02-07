@@ -26,19 +26,17 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
     parent?: string
   ): Promise<boolean> => {
     try {
-      const variables = isRootChild
-        ? { name, caseId: activeRecord?.id }
-        : { name, folderId: parent };
-
+      const variables = {
+        name,
+        folderId: isRootChild ? activeRecord?.root : parent,
+      };
       const response = await client.mutate({
         mutation: CREATE_FOLDER,
         variables,
         refetchQueries: [
           {
             query: GET_FOLDER,
-            variables: isRootChild
-              ? { caseId: activeRecord?.id }
-              : { id: parent },
+            variables: { id: isRootChild ? activeRecord?.root : parent },
           },
         ],
       });
@@ -84,18 +82,18 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
     parent?: string
   ): Promise<boolean> => {
     try {
-      const variables = isRootChild
-        ? { file, caseId: activeRecord?.id }
-        : { file, folderId: parent };
+      const variables = {
+        file,
+        folderId: isRootChild ? activeRecord?.root : parent,
+      };
+
       const response = await client.mutate({
         mutation: UPLOAD_FILE,
         variables,
         refetchQueries: [
           {
             query: GET_FOLDER,
-            variables: isRootChild
-              ? { caseId: activeRecord?.id }
-              : { id: parent },
+            variables: { id: isRootChild ? activeRecord?.root : parent },
           },
         ],
       });
@@ -193,32 +191,21 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
   const getFiles = async (record: string, level: number = 0): Promise<void> => {
     try {
       const isRootFolder = level === 0;
-      const variables = isRootFolder ? { caseId: record } : { id: record };
+      if (isRootFolder) setFiles(() => []);
       const response = await client.query({
         query: GET_FOLDER,
-        variables,
+        variables: { id: record },
       });
       if (isRootFolder) {
         setFiles(
-          (response.data?.getFolders?.edges as any[]).map((edge) =>
-            edge.node.__typename === "Folder" ||
-            edge.node.__typename === "SubFolder"
-              ? {
-                  isDirectory: true,
-                  id: edge.node.mongoId,
-                  name: edge.node.name,
-                  content: createTree({ ...edge.node, level: 0 }), // TODO: Agregar lvl
-                  level,
-                }
-              : {
-                  isDirectory: false,
-                  id: edge.node.mongoId,
-                  name: edge.node.name,
-                  content: "",
-                  type: FileType.TEXT,
-                  level,
-                }
-          ) ?? []
+          createTree({
+            ...(
+              ((response.data?.getFolders?.edges as any[]) ?? []).find(
+                (edge) => edge.node.name === "root"
+              ) ?? { node: {} }
+            ).node,
+            level: 0,
+          })
         );
       } else {
         setFiles((files) => {

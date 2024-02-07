@@ -30,6 +30,10 @@ const RecordsProvider = ({ children }: Props): ReactElement => {
             id: response.data.createCase.mongoId,
             name: response.data.createCase.name,
             status: RecordStatus.OPEN,
+            root:
+              (response.data.createCase.folders as any[]).find(
+                (folder) => folder.name === "root"
+              )?.mongoId ?? "",
           },
         ]);
       }
@@ -49,6 +53,9 @@ const RecordsProvider = ({ children }: Props): ReactElement => {
           id: edge?.node?.mongoId,
           name: edge?.node?.name,
           status: RecordStatus.OPEN,
+          root:
+            (edge?.node?.folders ?? []).find((folder) => folder.name === "root")
+              ?.mongoId ?? "",
         })) ?? []
       );
     } catch (e) {

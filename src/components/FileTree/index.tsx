@@ -20,7 +20,7 @@ const FileTree = () => {
   useEffect(() => {
     if (!activeRecord?.id) return;
     actions?.setActiveNode();
-    actions?.getFiles(activeRecord.id);
+    actions?.getFiles(activeRecord.root);
   }, [activeRecord]);
 
   return (

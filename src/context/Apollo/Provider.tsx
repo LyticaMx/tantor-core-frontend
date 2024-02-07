@@ -23,9 +23,9 @@ const ApolloProvider = (props: Props) => {
   const loaderLink = new ApolloLink((operation, forward) => {
     actions?.addPendingActions();
 
-    return forward(operation).map((response) => {
+    return forward(operation).map((operation) => {
       actions?.removePendingActions();
-      return response;
+      return operation;
     });
   });
 

@@ -2,9 +2,13 @@ import { gql } from "@apollo/client";
 
 export const GET_CASES = gql`
   query GetCases {
-    getCases {
+    getCases(includes: { folders: true }) {
       edges {
         node {
+          folders {
+            mongoId
+            name
+          }
           mongoId
           name
         }
@@ -18,6 +22,10 @@ export const ADD_CASE = gql`
     createCase(newCase: { name: $name }) {
       name
       mongoId
+      folders {
+        mongoId
+        name
+      }
     }
   }
 `;

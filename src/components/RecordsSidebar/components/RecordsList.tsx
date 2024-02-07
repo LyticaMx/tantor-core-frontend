@@ -15,6 +15,7 @@ const RecordsList = () => {
         <Record
           key={record.id}
           id={record.id}
+          root={record.root}
           name={record.name}
           status={record.status}
           selected={record.id === activeRecord?.id}
