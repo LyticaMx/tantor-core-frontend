@@ -1,6 +1,13 @@
-import { useState, useMemo, ReactNode, ReactElement, useCallback } from "react";
+import {
+  useState,
+  useMemo,
+  ReactNode,
+  ReactElement,
+  useCallback,
+  useImperativeHandle,
+} from "react";
 
-import { LoaderContext } from "./LoaderContext";
+import { LoaderContext, LoaderContextRef } from "./LoaderContext";
 
 interface Props {
   children: ReactNode;
@@ -47,6 +54,8 @@ const LoaderProvider = ({ children }: Props): ReactElement => {
     }),
     [addPendingActions, removePendingActions]
   );
+
+  useImperativeHandle(LoaderContextRef, () => contextValue, [contextValue]);
 
   return (
     <LoaderContext.Provider value={contextValue}>

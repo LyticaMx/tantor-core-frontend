@@ -1,10 +1,16 @@
-import { ReactElement, ReactNode, useMemo, useState } from "react";
+import {
+  ReactElement,
+  ReactNode,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react";
 import { useHistory } from "react-router-dom";
 import { useLoader } from "../Loader";
 // import { toast } from "react-toastify";
 // import { useFormatMessage } from "@/hooks/useFormatMessage";
 import { Auth, ContextType, SignIn } from "./types";
-import { AuthContext, initialState } from "./context";
+import { AuthContext, AuthContextRef, initialState } from "./context";
 import { paths } from "@/router/routes";
 import useApi from "@/hooks/useApi";
 import { removeItem, setItem } from "@/utils/persistentStorage";
@@ -106,6 +112,8 @@ const AuthProvider = (props: Props): ReactElement => {
     }),
     [auth]
   );
+
+  useImperativeHandle(AuthContextRef, () => contextValue, [contextValue]);
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

@@ -268,7 +268,6 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
     if (node) {
       if (node.isDirectory && node.level >= 1) {
         try {
-          console.log({ node });
           await getFiles(node.id, node.level, node.path);
         } catch (e) {
           console.error(e);
