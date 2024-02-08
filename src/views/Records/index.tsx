@@ -13,8 +13,11 @@ import { useFileTree } from "@/context/FileTree/useFileTree";
 import FileTree from "@/components/FileTree";
 import RecordsSidebar from "@/components/RecordsSidebar";
 import { useMemo } from "react";
+import { useRecords } from "@/context/Records";
+import NoData from "@/components/NoData";
 
 const Records = () => {
+  const { activeRecord } = useRecords();
   const { activeNode } = useFileTree();
 
   const Image = useMemo(() => {
@@ -41,10 +44,16 @@ const Records = () => {
         <RecordsSidebar />
       </div>
       <div className="overflow-auto p-4 px-6 border-r border-r-gray-300">
-        <FileTree />
+        {activeRecord ? (
+          <FileTree />
+        ) : (
+          <div className="flex items-center h-full">
+            <NoData />
+          </div>
+        )}
       </div>
       <div className="overflow-auto p-4 px-6 col-span-3">
-        {activeNode && !activeNode.isDirectory && (
+        {activeNode && !activeNode.isDirectory ? (
           <main className="max-h-full">
             <header className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -68,6 +77,10 @@ const Records = () => {
               />
             </section>
           </main>
+        ) : (
+          <div className="flex items-center h-full">
+            <NoData />
+          </div>
         )}
       </div>
     </div>
