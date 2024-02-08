@@ -6,6 +6,7 @@ import File from "./File";
 
 interface Props {
   id: string;
+  path: string;
   name: string;
   nodes?: TreeNode[];
   level: number;
@@ -21,12 +22,14 @@ const Folder = (props: Props) => {
       <button
         className={clsx(
           "w-full py-1 px-2 rounded-lg flex gap-2 items-center hover:bg-purple-100 transition-background",
-          props.id === props.activeNode?.id && "bg-purple-600 bg-opacity-15"
+
+          props.path === props.activeNode?.path && "bg-purple-600 bg-opacity-15"
         )}
         onClick={() => {
           if (!expand) {
             props.onClick({
               id: props.id,
+              path: props.path,
               content: [],
               isDirectory: true,
               name: props.name,
@@ -52,6 +55,7 @@ const Folder = (props: Props) => {
             node.isDirectory ? (
               <Folder
                 key={node.id}
+                path={node.path}
                 id={node.id}
                 name={node.name}
                 onClick={props.onClick}
@@ -61,8 +65,8 @@ const Folder = (props: Props) => {
               />
             ) : (
               <File
-                key={node.id}
-                id={node.id}
+                key={node.path}
+                path={node.path}
                 name={node.name}
                 onClick={props.onClick}
                 activeNode={props.activeNode}

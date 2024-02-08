@@ -1,7 +1,7 @@
 import { FileType } from "@/types/FileType";
 
 export interface FileNode {
-  id: string;
+  path: string;
   name: string;
   content: string;
   type: FileType;
@@ -11,6 +11,7 @@ export interface FileNode {
 
 export interface DirectoryNode {
   id: string;
+  path: string;
   name: string;
   content: TreeNode[];
   isDirectory: true;
@@ -23,7 +24,11 @@ export interface TreeContextType {
   activeNode: TreeNode | null;
   files: TreeNode[];
   actions?: {
-    getFiles: (record: string) => Promise<void>;
+    getFiles: (
+      record: string,
+      level?: number,
+      parent?: string
+    ) => Promise<void>;
     uploadFile: (
       file: File,
       isRootChild: boolean,

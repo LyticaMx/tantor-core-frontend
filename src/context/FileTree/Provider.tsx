@@ -44,6 +44,7 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
       const createdNode: DirectoryNode = {
         isDirectory: true,
         content: [],
+        path: `/${response.data?.createFolder?.name}`,
         id: response.data?.createFolder?.mongoId,
         name: response.data?.createFolder?.name,
         level: -1,
@@ -63,7 +64,8 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
               updated[i],
               parent ?? "",
               [createdNode],
-              0
+              updated[i].level,
+              updated[i].path
             );
           }
           return updated;
@@ -82,14 +84,16 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
     parent?: string
   ): Promise<boolean> => {
     try {
-      const variables = {
-        file,
-        folderId: isRootChild ? activeRecord?.root : parent,
-      };
-
       const response = await client.mutate({
         mutation: UPLOAD_FILE,
-        variables,
+        variables: {
+          files: [
+            {
+              file,
+              folderId: isRootChild ? activeRecord?.root : parent,
+            },
+          ],
+        },
         refetchQueries: [
           {
             query: GET_FOLDER,
@@ -97,16 +101,18 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
           },
         ],
       });
-      const createdNode: FileNode = {
-        isDirectory: false,
-        content: "",
-        id: response.data?.uploadFile?.mongoId,
-        name: response.data?.uploadFile?.name,
-        type: FileType.UNKNOWN,
-        level: -1,
-      };
+      const createdNodes: FileNode[] = response.data?.uploadFile?.map(
+        (node) => ({
+          isDirectory: false,
+          content: "",
+          name: node.name,
+          type: FileType.UNKNOWN,
+          level: -1,
+        })
+      );
+
       if (isRootChild) {
-        setFiles((files) => [...files, createdNode]);
+        setFiles((files) => [...files, ...createdNodes]);
       } else {
         setFiles((files) => {
           const updated = [...files];
@@ -118,8 +124,9 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
             inserted = insertNodeInTree(
               updated[i],
               parent ?? "",
-              [createdNode],
-              0
+              createdNodes,
+              updated[i].level,
+              updated[i].path
             );
           }
           return updated;
@@ -136,6 +143,7 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
     files: any[] | null;
     subfolders: any[] | null;
     level: number;
+    parent: string;
   }) => {
     if (!node.files && !node.subfolders) return [];
     let tree: TreeNode[] = [];
@@ -146,17 +154,18 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
         content: [],
         name: subfolder.name,
         level: node.level + 1,
+        path: `${node.parent}/${subfolder.name}`,
       }));
     }
     if (node.files) {
       tree = tree.concat(
-        node.files.map((file) => ({
+        node.files.map<FileNode>((file) => ({
           isDirectory: false,
           content: "",
-          id: file.mongoId,
           name: file.name,
           type: FileType.UNKNOWN,
           level: node.level + 1,
+          path: `${node.parent}/${file.name}`,
         }))
       );
     }
@@ -168,12 +177,14 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
     father: string,
     nodesToInsert: TreeNode[],
     level: number,
+    parentPath: string = "",
     hard: boolean = false
   ): boolean => {
     if (!node.isDirectory) return false;
     if (node.id === father) {
       const nodes = nodesToInsert.map((node) => {
         node.level = level + 1;
+        node.path = `${parentPath}/${node.name}`;
         return node;
       });
       if (!hard) node.content = node.content.concat(nodes);
@@ -181,14 +192,27 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
       return true;
     } else {
       for (const child of node.content) {
-        if (insertNodeInTree(child, father, nodesToInsert, level + 1, hard))
+        if (
+          insertNodeInTree(
+            child,
+            father,
+            nodesToInsert,
+            level + 1,
+            `${parentPath}/${child.name}`,
+            hard
+          )
+        )
           return true;
       }
     }
     return false;
   };
 
-  const getFiles = async (record: string, level: number = 0): Promise<void> => {
+  const getFiles = async (
+    record: string,
+    level: number = 0,
+    parent: string = ""
+  ): Promise<void> => {
     try {
       const isRootFolder = level === 0;
       if (isRootFolder) setFiles(() => []);
@@ -205,6 +229,7 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
               ) ?? { node: {} }
             ).node,
             level: 0,
+            parent,
           })
         );
       } else {
@@ -221,11 +246,13 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
               createTree(
                 response.data?.getFolders?.edges?.[0]?.node ?? {
                   files: null,
-                  level: -1,
                   subfolders: null,
+                  level: -1,
+                  parent: "",
                 }
               ),
-              0,
+              updated[i].level,
+              updated[i].path,
               true
             );
           }
@@ -241,7 +268,8 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
     if (node) {
       if (node.isDirectory && node.level >= 1) {
         try {
-          await getFiles(node.id, node.level);
+          console.log({ node });
+          await getFiles(node.id, node.level, node.path);
         } catch (e) {
           console.error(e);
         }

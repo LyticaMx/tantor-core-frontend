@@ -11,7 +11,7 @@ import clsx from "clsx";
 import { useMemo } from "react";
 
 interface Props {
-  id: string;
+  path: string;
   name: string;
   type: FileType;
   level: number;
@@ -41,11 +41,11 @@ const File = (props: Props) => {
       role="button"
       className={clsx(
         "py-1 px-2 rounded-lg hover:bg-purple-100 transition-background",
-        props.id === props.activeNode?.id && "bg-purple-600 bg-opacity-15"
+        props.path === props.activeNode?.path && "bg-purple-600 bg-opacity-15"
       )}
       onClick={() =>
         props.onClick({
-          id: props.id,
+          path: props.path,
           content: "",
           isDirectory: false,
           name: props.name,

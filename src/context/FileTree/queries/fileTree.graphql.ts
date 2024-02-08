@@ -15,7 +15,6 @@ export const GET_FOLDER = gql`
             name
           }
           files {
-            mongoId
             name
           }
         }
@@ -25,11 +24,8 @@ export const GET_FOLDER = gql`
 `;
 
 export const UPLOAD_FILE = gql`
-  mutation UploadFile($file: Upload!, $folderId: String, $caseId: String) {
-    uploadFile(
-      newFiles: [{ file: $file, folderId: $folderId, caseId: $caseId }]
-    ) {
-      mongoId
+  mutation UploadFile($files: [NewFileInput!]!) {
+    uploadFile(newFiles: $files) {
       name
       folderId
     }

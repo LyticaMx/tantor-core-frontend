@@ -68,6 +68,7 @@ const FileTree = () => {
           node.isDirectory ? (
             <Folder
               key={node.id}
+              path={node.path}
               id={node.id}
               name={node.name}
               onClick={actions?.setActiveNode ?? (() => {})}
@@ -77,8 +78,8 @@ const FileTree = () => {
             />
           ) : (
             <File
-              key={node.id}
-              id={node.id}
+              key={node.path}
+              path={node.path}
               name={node.name}
               onClick={actions?.setActiveNode ?? (() => {})}
               activeNode={activeNode}
