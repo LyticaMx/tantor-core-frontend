@@ -16,6 +16,7 @@ export const GET_FOLDER = gql`
           }
           files {
             name
+            type
           }
         }
       }
@@ -28,6 +29,7 @@ export const UPLOAD_FILE = gql`
     uploadFile(newFiles: $files) {
       name
       folderId
+      type
     }
   }
 `;

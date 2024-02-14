@@ -7,7 +7,6 @@ import {
   GET_FOLDER,
   UPLOAD_FILE,
 } from "./queries/fileTree.graphql";
-import { FileType } from "@/types/FileType";
 import { useRecords } from "../Records";
 
 interface Props {
@@ -106,7 +105,7 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
           isDirectory: false,
           content: "",
           name: node.name,
-          type: FileType.UNKNOWN,
+          type: node.type,
           level: -1,
         })
       );
@@ -163,7 +162,7 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
           isDirectory: false,
           content: "",
           name: file.name,
-          type: FileType.UNKNOWN,
+          type: file.type,
           level: node.level + 1,
           path: `${node.parent}/${file.name}`,
         }))

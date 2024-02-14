@@ -63,28 +63,21 @@ const FileTree = () => {
           <FolderPlusIcon className="w-5 h-5" />
         </button>
       </div>
-      <div className="mt-2 flex flex-col gap-1">
+      <div className="mt-2 flex flex-col gap-1 min-w-full w-fit">
         {files.map((node) =>
           node.isDirectory ? (
             <Folder
               key={node.id}
-              path={node.path}
-              id={node.id}
-              name={node.name}
+              node={node}
               onClick={actions?.setActiveNode ?? (() => {})}
-              nodes={node.content}
               activeNode={activeNode}
-              level={node.level}
             />
           ) : (
             <File
               key={node.path}
-              path={node.path}
-              name={node.name}
+              node={node}
               onClick={actions?.setActiveNode ?? (() => {})}
               activeNode={activeNode}
-              type={node.type}
-              level={node.level}
             />
           )
         )}

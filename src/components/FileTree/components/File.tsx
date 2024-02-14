@@ -1,4 +1,4 @@
-import { TreeNode } from "@/context/FileTree/types";
+import { FileNode, TreeNode } from "@/context/FileTree/types";
 import { FileType } from "@/types/FileType";
 import {
   DocumentIcon,
@@ -11,17 +11,15 @@ import clsx from "clsx";
 import { useMemo } from "react";
 
 interface Props {
-  path: string;
-  name: string;
-  type: FileType;
-  level: number;
+  node: FileNode;
   onClick: (node: TreeNode) => void;
   activeNode: TreeNode | null;
 }
 
 const File = (props: Props) => {
+  const { path, name, type } = props.node;
   const Image = useMemo(() => {
-    switch (props.type) {
+    switch (type) {
       case FileType.AUDIO:
         return SpeakerWaveIcon;
       case FileType.IMAGE:
@@ -34,31 +32,22 @@ const File = (props: Props) => {
       default:
         return DocumentIcon;
     }
-  }, [props.type]);
+  }, [type]);
 
   return (
     <div
       role="button"
       className={clsx(
         "py-1 px-2 rounded-lg hover:bg-purple-100 transition-background",
-        props.path === props.activeNode?.path && "bg-purple-600 bg-opacity-15"
+        path === props.activeNode?.path && "bg-purple-600 bg-opacity-15"
       )}
-      onClick={() =>
-        props.onClick({
-          path: props.path,
-          content: "",
-          isDirectory: false,
-          name: props.name,
-          type: props.type,
-          level: props.level,
-        })
-      }
+      onClick={() => props.onClick(props.node)}
     >
       <p className="flex items-center gap-2 break-keep">
         <span className="block">
           <Image className="w-4 h-4" />
         </span>
-        <span className="flex-shrink-0">{props.name}</span>
+        <span className="flex-shrink-0">{name}</span>
       </p>
     </div>
   );

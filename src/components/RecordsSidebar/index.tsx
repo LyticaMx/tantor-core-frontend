@@ -4,21 +4,35 @@ import RecordsList from "./components/RecordsList";
 import RecordModal from "./components/RecordModal";
 import { useFormatMessage } from "@/hooks/useFormatMessage";
 import { messages } from "./messages";
+import { useFormik } from "formik";
 
 const RecordsSidebar = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const getMessage = useFormatMessage(messages);
+  const formik = useFormik({
+    initialValues: { search: "" },
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
 
   return (
     <div>
-      <Input
-        className="text-lg"
-        type="text"
-        placeholder={getMessage("searchRecord")}
-        startContent={
-          <MagnifyingGlassIcon className="w-4 h-4 text-default-400 pointer-events-none flex-shrink-0" />
-        }
-      />
+      <form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
+        <Input
+          className="text-lg"
+          type="text"
+          placeholder={getMessage("searchRecord")}
+          startContent={
+            <MagnifyingGlassIcon className="w-4 h-4 text-default-400 pointer-events-none flex-shrink-0" />
+          }
+          name="search"
+          value={formik.values.search}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+        <button className="hidden" type="submit" />
+      </form>
       <div className="mt-4 mb-2 flex justify-between items-center">
         <h2 className="text-lg font-semibold">{getMessage("records")}</h2>
         <button
