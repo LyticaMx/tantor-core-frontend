@@ -5,14 +5,16 @@ import RecordModal from "./components/RecordModal";
 import { useFormatMessage } from "@/hooks/useFormatMessage";
 import { messages } from "./messages";
 import { useFormik } from "formik";
+import { useRecords } from "@/context/Records";
 
 const RecordsSidebar = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const getMessage = useFormatMessage(messages);
+  const { actions } = useRecords();
   const formik = useFormik({
     initialValues: { search: "" },
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      await actions?.getRecords(values.search);
     },
   });
 

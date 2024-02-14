@@ -13,7 +13,7 @@ export interface RecordsContextType {
   activeRecord: Record | null;
   records: Record[];
   actions?: {
-    getRecords: () => Promise<void>;
+    getRecords: (search?: string) => Promise<void>;
     createRecord: (record: RecordPayload) => Promise<boolean>;
     setActiveRecord: (record?: Record) => void;
   };

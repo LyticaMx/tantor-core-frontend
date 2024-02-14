@@ -44,9 +44,14 @@ const RecordsProvider = ({ children }: Props): ReactElement => {
     }
   };
 
-  const getRecords = async (): Promise<void> => {
+  const getRecords = async (search?: string): Promise<void> => {
     try {
-      const response = await client.query({ query: GET_CASES });
+      const response = await client.query({
+        query: GET_CASES,
+        variables: {
+          name: search,
+        },
+      });
 
       setRecords(
         (response.data?.getCases?.edges as any[])?.map((edge) => ({
