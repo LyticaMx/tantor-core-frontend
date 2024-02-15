@@ -4,4 +4,5 @@ export enum FileType {
   TEXT = "text",
   PDF = "pdf",
   VIDEO = "video",
+  UNKNOWN = "unknown",
 }

@@ -9,16 +9,18 @@ import Folder from "./components/Folder";
 import FolderModal from "./components/FolderModal";
 import { useRecords } from "@/context/Records";
 import { useFileTree } from "@/context/FileTree/useFileTree";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 const FileTree = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { activeRecord } = useRecords();
   const { files, activeNode, actions } = useFileTree();
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (!activeRecord?.id) return;
-    actions?.getFiles(activeRecord.id);
+    actions?.setActiveNode();
+    actions?.getFiles(activeRecord.root);
   }, [activeRecord]);
 
   return (
@@ -28,8 +30,24 @@ const FileTree = () => {
         <span className="font-medium">{activeRecord?.name ?? ""}</span>
       </h3>
       <Divider className="my-4" />
-      <form className="hidden">
-        <input id="loadFile" type="file" accept="application/pdf" />
+      <form className="hidden" ref={formRef}>
+        <input
+          id="loadFile"
+          type="file"
+          accept="application/pdf"
+          onChange={async ({ target: { validity, files } }) => {
+            if (validity.valid && files && files.length > 0) {
+              const isRootChild =
+                !Boolean(activeNode) || !activeNode?.isDirectory;
+              await actions?.uploadFile(
+                files[0],
+                isRootChild,
+                isRootChild ? activeRecord?.id : activeNode?.id
+              );
+              formRef.current?.reset();
+            }
+          }}
+        />
       </form>
       <div className="flex items-center">
         <label
@@ -45,25 +63,21 @@ const FileTree = () => {
           <FolderPlusIcon className="w-5 h-5" />
         </button>
       </div>
-      <div className="mt-2 flex flex-col gap-1">
+      <div className="mt-2 flex flex-col gap-1 min-w-full w-fit">
         {files.map((node) =>
           node.isDirectory ? (
             <Folder
               key={node.id}
-              id={node.id}
-              name={node.name}
+              node={node}
               onClick={actions?.setActiveNode ?? (() => {})}
-              nodes={node.content}
               activeNode={activeNode}
             />
           ) : (
             <File
-              key={node.id}
-              id={node.id}
-              name={node.name}
+              key={node.path}
+              node={node}
               onClick={actions?.setActiveNode ?? (() => {})}
               activeNode={activeNode}
-              type={node.type}
             />
           )
         )}

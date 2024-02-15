@@ -31,8 +31,11 @@ const RecordModal = (props: Props) => {
     initialValues: {
       name: props.initialState?.name ?? "",
     },
-    onSubmit: async (values: FormValues) => {
-      await actions?.createRecord(values);
+    onSubmit: async (values: FormValues, helpers) => {
+      const created = await actions?.createRecord(values);
+      if (created) {
+        helpers.resetForm();
+      }
       props.onOpenChange(false);
     },
     validationSchema: object({

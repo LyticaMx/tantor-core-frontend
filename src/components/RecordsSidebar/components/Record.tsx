@@ -5,6 +5,7 @@ import clsx from "clsx";
 interface Props {
   id: string;
   name: string;
+  root: string;
   status: RecordStatus;
   selected?: boolean;
   onClick: (record: RecordType) => void;
@@ -18,7 +19,12 @@ const Record = (props: Props) => (
     )}
     role="button"
     onClick={() =>
-      props.onClick({ id: props.id, name: props.name, status: props.status })
+      props.onClick({
+        id: props.id,
+        name: props.name,
+        status: props.status,
+        root: props.root,
+      })
     }
   >
     <span

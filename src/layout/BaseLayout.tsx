@@ -1,6 +1,3 @@
-// import Sidebar from "@/components/Sidebar";
-import FileTree from "@/components/FileTree";
-import RecordsSidebar from "@/components/RecordsSidebar";
 import { ReactElement } from "react";
 
 interface Props {
@@ -10,18 +7,7 @@ interface Props {
 const BaseLayout = (props: Props) => {
   const { children } = props;
 
-  return (
-    <div className="h-screen overflow-y-hidden grid grid-cols-5">
-      <div className="overflow-auto p-4 px-6 border-r border-r-gray-300">
-        <RecordsSidebar />
-      </div>
-      <div className="overflow-auto p-4 px-6 border-r border-r-gray-300">
-        <FileTree />
-      </div>
-
-      <div className="overflow-auto p-4 px-6 col-span-3">{children}</div>
-    </div>
-  );
+  return <div className="h-screen">{children}</div>;
   /*
   return (
     <div className="h-screen overflow-y-hidden">

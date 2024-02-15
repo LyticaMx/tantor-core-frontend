@@ -10,14 +10,20 @@ import {
 } from "@heroicons/react/24/outline";
 import demoPDF from "@/demo/transcription.pdf";
 import { useFileTree } from "@/context/FileTree/useFileTree";
+import FileTree from "@/components/FileTree";
+import RecordsSidebar from "@/components/RecordsSidebar";
+import { useMemo } from "react";
+import { useRecords } from "@/context/Records";
+import NoData from "@/components/NoData";
 
 const Records = () => {
+  const { activeRecord } = useRecords();
   const { activeNode } = useFileTree();
 
-  if (!activeNode || activeNode.isDirectory) return null;
+  const Image = useMemo(() => {
+    if (!activeNode || activeNode.isDirectory) return null;
 
-  const getImage = (type?: FileType) => {
-    switch (type) {
+    switch (activeNode.type) {
       case FileType.AUDIO:
         return SpeakerWaveIcon;
       case FileType.IMAGE:
@@ -30,34 +36,54 @@ const Records = () => {
       default:
         return DocumentIcon;
     }
-  };
-
-  const Image = getImage(activeNode?.type);
+  }, [activeNode]);
 
   return (
-    <main className="max-h-full">
-      <header className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Image className="w-5 h-5" />
-          <h3>{activeNode?.name ?? ""}</h3>
-        </div>
-        <div className="flex items-center gap-2">
-          <button className="transition-[color] hover:text-primary">
-            <InformationCircleIcon className="w-5 h-5" />
-          </button>
-          <button className="transition-[color] hover:text-primary">
-            <EllipsisHorizontalIcon className="w-5 h-5" />
-          </button>
-        </div>
-      </header>
-      <section className="mt-4">
-        <embed
-          src={demoPDF}
-          type="application/pdf"
-          className="w-full h-[91vh]"
-        />
-      </section>
-    </main>
+    <div className="h-[100cqh] overflow-y-hidden grid grid-cols-5">
+      <div className="overflow-auto p-4 px-6 border-r border-r-gray-300">
+        <RecordsSidebar />
+      </div>
+      <div className="overflow-auto p-4 px-6 border-r border-r-gray-300">
+        {activeRecord ? (
+          <FileTree />
+        ) : (
+          <div className="flex items-center h-full">
+            <NoData />
+          </div>
+        )}
+      </div>
+      <div className="overflow-auto p-4 px-6 col-span-3">
+        {activeNode && !activeNode.isDirectory ? (
+          <main className="max-h-full">
+            <header className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {Image && <Image className="w-5 h-5" />}
+                <h3>{activeNode?.name ?? ""}</h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <button className="transition-[color] hover:text-primary">
+                  <InformationCircleIcon className="w-5 h-5" />
+                </button>
+                <button className="transition-[color] hover:text-primary">
+                  <EllipsisHorizontalIcon className="w-5 h-5" />
+                </button>
+              </div>
+            </header>
+            <section className="mt-4">
+              <embed
+                src={demoPDF}
+                type="application/pdf"
+                className="w-full h-[91vh]"
+              />
+            </section>
+          </main>
+        ) : (
+          <div className="flex items-center h-full">
+            <NoData />
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

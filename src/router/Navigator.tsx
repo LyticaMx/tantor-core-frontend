@@ -18,7 +18,7 @@ const Navigator = (): ReactElement => {
           )}
         </Route>
       ))}
-      <Redirect to={auth.isLoggedIn ? paths.events : paths.auth} />
+      <Redirect to={auth.isLoggedIn ? paths.records : paths.auth} />
     </Switch>
   );
 };
