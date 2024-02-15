@@ -19,7 +19,6 @@ const Folder = (props: Props) => {
       <button
         className={clsx(
           "w-full py-1 px-2 rounded-lg flex gap-2 items-center hover:bg-purple-100 transition-background",
-
           path === props.activeNode?.path && "bg-purple-600 bg-opacity-15"
         )}
         onClick={() => {

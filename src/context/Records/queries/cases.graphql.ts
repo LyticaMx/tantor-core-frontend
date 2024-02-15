@@ -2,7 +2,10 @@ import { gql } from "@apollo/client";
 
 export const GET_CASES = gql`
   query GetCases($name: String) {
-    getCases(filters: { name: $name }, includes: { folders: true }) {
+    getCases(
+      filters: { name: { contains: $name } }
+      includes: { folders: true }
+    ) {
       edges {
         node {
           folders {

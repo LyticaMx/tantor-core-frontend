@@ -43,7 +43,7 @@ const File = (props: Props) => {
       )}
       onClick={() => props.onClick(props.node)}
     >
-      <p className="flex items-center gap-2 break-keep">
+      <p className="flex items-center gap-2 break-keep w-max">
         <span className="block">
           <Image className="w-4 h-4" />
         </span>
