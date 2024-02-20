@@ -1,3 +1,4 @@
+import { LogOutButton } from "@/components/LogOutButton";
 import { ReactElement } from "react";
 
 interface Props {
@@ -7,7 +8,12 @@ interface Props {
 const BaseLayout = (props: Props) => {
   const { children } = props;
 
-  return <div className="h-screen">{children}</div>;
+  return (
+    <div>
+      <LogOutButton />
+      <div className="h-screen">{children}</div>
+    </div>
+  );
   /*
   return (
     <div className="h-screen overflow-y-hidden">

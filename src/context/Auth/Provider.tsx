@@ -18,6 +18,7 @@ import { jwtDecode } from "jwt-decode";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import { useFormatMessage } from "@/hooks/useFormatMessage";
+import { useApolloClient } from "@apollo/client";
 
 interface Props {
   children: ReactNode;
@@ -35,6 +36,7 @@ const AuthProvider = (props: Props): ReactElement => {
   const getMessage = useFormatMessage();
   const [auth, setAuth] = useState<Auth>(initialState);
   const _signIn = useApi({ endpoint: "login", base: "auth", method: "get" });
+  const client = useApolloClient();
 
   const signIn = async (values: SignIn): Promise<void> => {
     try {
@@ -69,6 +71,7 @@ const AuthProvider = (props: Props): ReactElement => {
           name: "Admin",
         },
       });
+      client.clearStore();
       history.push(paths.auth);
     } catch {}
   };

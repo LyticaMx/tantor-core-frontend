@@ -47,7 +47,7 @@ const httpLink = createUploadLink({
   uri: import.meta.env.VITE_TANTOR_CORE_GRAPHQL,
 });
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
   link: from([loaderLink, authLink, httpLink]),
   cache: new InMemoryCache(),
 });

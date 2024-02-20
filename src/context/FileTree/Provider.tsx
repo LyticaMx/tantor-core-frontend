@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useMemo, useState } from "react";
+import { ReactElement, ReactNode, useEffect, useMemo, useState } from "react";
 import { DirectoryNode, FileNode, TreeContextType, TreeNode } from "./types";
 import { FileTreeContext } from "./context";
 import { useApolloClient } from "@apollo/client";
@@ -8,12 +8,14 @@ import {
   UPLOAD_FILE,
 } from "./queries/fileTree.graphql";
 import { useRecords } from "../Records";
+import { useAuth } from "../Auth";
 
 interface Props {
   children: ReactNode;
 }
 
 const FileTreeProvider = ({ children }: Props): ReactElement => {
+  const { auth } = useAuth();
   const [activeNode, setActiveNode] = useState<TreeNode | null>(null);
   const [files, setFiles] = useState<TreeNode[]>([]);
   const { activeRecord } = useRecords();
@@ -289,6 +291,13 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
     }),
     [files, activeNode]
   );
+
+  useEffect(() => {
+    if (!auth.isLoggedIn) {
+      setActiveNode(null);
+      setFiles([]);
+    }
+  }, [auth.isLoggedIn]);
 
   return (
     <FileTreeContext.Provider value={contextValue}>

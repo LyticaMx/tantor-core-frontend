@@ -21,18 +21,18 @@ function App() {
   return (
     <BrowserRouter>
       <LanguageProvider>
-        <LoaderProvider>
-          <AuthProvider>
-            <ApolloProvider>
+        <ApolloProvider>
+          <LoaderProvider>
+            <AuthProvider>
               <RecordsProvider>
                 <FileTreeProvider>
                   <Navigator />
                   <Loader />
                 </FileTreeProvider>
               </RecordsProvider>
-            </ApolloProvider>
-          </AuthProvider>
-        </LoaderProvider>
+            </AuthProvider>
+          </LoaderProvider>
+        </ApolloProvider>
       </LanguageProvider>
       <ToastContainer position="top-right" limit={5} />
     </BrowserRouter>

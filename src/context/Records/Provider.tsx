@@ -1,8 +1,9 @@
-import { ReactElement, ReactNode, useMemo, useState } from "react";
+import { ReactElement, ReactNode, useEffect, useMemo, useState } from "react";
 import { Record, RecordPayload, RecordsContextType } from "./types";
 import { RecordsContext } from "./context";
 import { useApolloClient } from "@apollo/client";
 import { ADD_CASE, GET_CASES } from "./queries/cases.graphql";
+import { useAuth } from "../Auth";
 
 interface Props {
   children: ReactNode;
@@ -11,6 +12,7 @@ interface Props {
 const RecordsProvider = ({ children }: Props): ReactElement => {
   const [records, setRecords] = useState<Record[]>([]);
   const [activeRecord, setActiveRecord] = useState<Record | null>(null);
+  const { auth } = useAuth();
   const client = useApolloClient();
 
   const createRecord = async (record: RecordPayload): Promise<boolean> => {
@@ -84,6 +86,13 @@ const RecordsProvider = ({ children }: Props): ReactElement => {
     }),
     [records, activeRecord]
   );
+
+  useEffect(() => {
+    if (!auth.isLoggedIn) {
+      setRecords([]);
+      setActiveRecord(null);
+    }
+  }, [auth.isLoggedIn]);
 
   return (
     <RecordsContext.Provider value={contextValue}>
