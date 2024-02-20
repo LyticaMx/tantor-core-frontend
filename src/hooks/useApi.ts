@@ -96,7 +96,7 @@ const useApi = ({
         const response: AxiosResponse = error.response;
 
         const unauthorized =
-          response.config.url !== "auth/login" && response.status === 401;
+          response.config.url !== "login" && response.status === 401;
 
         if (unauthorized) {
           const errorsRegistered = Number(getItem("errorsAuthRegistered")) ?? 0;
@@ -109,11 +109,16 @@ const useApi = ({
               ? response.data.i18key
               : 'unexpected'
           */
+
           setTimeout(() => {
-            toast.error(
-              response?.data?.message ??
-                intl.formatMessage(apiMessages.unexpected)
-            );
+            if (response.status === 401) {
+              toast.error(intl.formatMessage(apiMessages.invalid_credentials));
+            } else {
+              toast.error(
+                response?.data?.message ??
+                  intl.formatMessage(apiMessages.unexpected)
+              );
+            }
           }, 500);
         }
 
