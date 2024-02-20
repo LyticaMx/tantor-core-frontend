@@ -3,7 +3,6 @@ import { Record, RecordPayload, RecordsContextType } from "./types";
 import { RecordsContext } from "./context";
 import { useApolloClient } from "@apollo/client";
 import { ADD_CASE, GET_CASES } from "./queries/cases.graphql";
-import { RecordStatus } from "@/types/RecordStatus";
 
 interface Props {
   children: ReactNode;
@@ -29,7 +28,7 @@ const RecordsProvider = ({ children }: Props): ReactElement => {
           {
             id: response.data.createCase.mongoId,
             name: response.data.createCase.name,
-            status: RecordStatus.OPEN,
+            status: response.data.createCase.status,
             root:
               (response.data.createCase.folders as any[]).find(
                 (folder) => folder.name === "root"
@@ -57,7 +56,7 @@ const RecordsProvider = ({ children }: Props): ReactElement => {
         (response.data?.getCases?.edges as any[])?.map((edge) => ({
           id: edge?.node?.mongoId,
           name: edge?.node?.name,
-          status: RecordStatus.OPEN,
+          status: edge?.node?.status,
           root:
             (edge?.node?.folders ?? []).find((folder) => folder.name === "root")
               ?.mongoId ?? "",

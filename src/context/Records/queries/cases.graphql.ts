@@ -14,6 +14,7 @@ export const GET_CASES = gql`
           }
           mongoId
           name
+          status
         }
       }
     }
@@ -29,6 +30,7 @@ export const ADD_CASE = gql`
         mongoId
         name
       }
+      status
     }
   }
 `;

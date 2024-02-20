@@ -1,8 +1,8 @@
 export enum FileType {
-  AUDIO = "audio",
-  IMAGE = "image",
-  TEXT = "text",
-  PDF = "pdf",
-  VIDEO = "video",
+  AUDIO = "AUDIO",
+  IMAGE = "IMAGE",
+  TEXT = "TEXT",
+  PDF = "PDF",
+  VIDEO = "VIDEO",
   UNKNOWN = "unknown",
 }
