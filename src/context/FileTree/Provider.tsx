@@ -108,7 +108,8 @@ const FileTreeProvider = ({ children }: Props): ReactElement => {
           content: "",
           name: node.name,
           type: node.type,
-          level: -1,
+          path: `/${node.name}`,
+          level: 1,
         })
       );
 
